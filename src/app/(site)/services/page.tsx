@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getCmsContent, CMS_KEYS } from "@/lib/cms";
 import { Plane, Sunset, Users } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default async function ServicesPage() {
   const cms = await getCmsContent();
 

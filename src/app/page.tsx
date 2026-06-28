@@ -13,6 +13,8 @@ import ReviewsSection from "@/components/home/ReviewsSection";
 import PricingSection from "@/components/home/PricingSection";
 import ContactSection from "@/components/home/ContactSection";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const [cms, operators, reviews, customerPhotos] = await Promise.all([
     getCmsContent(),

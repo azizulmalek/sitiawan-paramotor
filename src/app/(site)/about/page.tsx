@@ -1,5 +1,7 @@
 import { getCmsContent, CMS_KEYS } from "@/lib/cms";
 
+export const dynamic = "force-dynamic";
+
 export default async function AboutPage() {
   const cms = await getCmsContent();
 
