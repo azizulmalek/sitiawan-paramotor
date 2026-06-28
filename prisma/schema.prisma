@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+}
+
+model CmsContent {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  title     String?
+  content   String
+  imageUrl  String?
+  updatedAt DateTime @updatedAt
+}
+
+model Operator {
+  id               String         @id @default(cuid())
+  name             String
+  email            String?
+  phone            String?
+  bio              String?
+  photoUrl         String?
+  experience       String?
+  background       String?
+  certifications   String?
+  sortOrder        Int            @default(0)
+  showOnHomepage   Boolean        @default(true)
+  active           Boolean        @default(true)
+  createdAt        DateTime       @default(now())
+  slotAssignments  SlotOperator[]
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  author    String
+  text      String
+  rating    Int      @default(5)
+  location  String?
+  imageUrl  String?
+  sortOrder Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model CustomerPhoto {
+  id        String   @id @default(cuid())
+  imageUrl  String
+  caption   String?
+  sortOrder Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model AvailabilityRule {
+  id        String  @id @default(cuid())
+  dayOfWeek Int
+  startTime String
+  endTime   String
+  active    Boolean @default(true)
+}
+
+model DateOverride {
+  id        String   @id @default(cuid())
+  date      DateTime @unique
+  startTime String?
+  endTime   String?
+  isClosed  Boolean  @default(false)
+}
+
+model TimeSlot {
+  id        String         @id @default(cuid())
+  date      DateTime
+  startTime String
+  endTime   String
+  operators SlotOperator[]
+  bookings  Booking[]
+
+  @@unique([date, startTime])
+}
+
+model SlotOperator {
+  id         String   @id @default(cuid())
+  slotId     String
+  operatorId String
+  slot       TimeSlot @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  operator   Operator @relation(fields: [operatorId], references: [id], onDelete: Cascade)
+
+  @@unique([slotId, operatorId])
+}
+
+model Booking {
+  id            String        @id @default(cuid())
+  slotId        String
+  packageId     String        @default("solo")
+  paxCount      Int           @default(1)
+  totalPrice    Int           @default(0)
+  customerName  String
+  customerEmail String
+  customerPhone String
+  notes         String?
+  status        String        @default("confirmed")
+  createdAt     DateTime      @default(now())
+  slot          TimeSlot      @relation(fields: [slotId], references: [id])
+  items         BookingItem[]
+}
+
+model BookingItem {
+  id        String  @id @default(cuid())
+  bookingId String
+  packageId String
+  quantity  Int     @default(1)
+  unitPrice Int
+  booking   Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+}
