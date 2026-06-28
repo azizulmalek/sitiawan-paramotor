@@ -21,11 +21,7 @@ async function upsertCms(
 ) {
   await prisma.cmsContent.upsert({
     where: { key },
-    update: {
-      content,
-      title: opts?.title ?? null,
-      imageUrl: opts?.imageUrl ?? null,
-    },
+    update: {},
     create: {
       key,
       content,
@@ -160,11 +156,6 @@ async function main() {
     const existing = await prisma.operator.findFirst({ where: { email: op.email } });
     if (!existing) {
       await prisma.operator.create({ data: op });
-    } else {
-      await prisma.operator.update({
-        where: { id: existing.id },
-        data: op,
-      });
     }
   }
 
